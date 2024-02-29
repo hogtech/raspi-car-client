@@ -1,3 +1,52 @@
+// ClientComponent.js
+import React, { useState, useEffect } from 'react';
+import { View, Text, Button } from 'react-native'
+// ClientComponent.js
+
+
+const ClientComponent = () => {
+  const [data, setData] = useState(null);
+  const [socket, setSocket] = useState(null);
+
+  useEffect(() => {
+    const ws = new WebSocket('ws://127.0.0.1:5000');
+
+    ws.onopen = () => {
+      console.log('Connected to WebSocket server');
+      setSocket(ws);
+    };
+
+    ws.onmessage = (message) => {
+      const jsonData = JSON.parse(message.data);
+      setData(jsonData.message);
+    };
+
+    ws.onclose = () => {
+      console.log('Disconnected from WebSocket server');
+    };
+
+    return () => {
+      ws.close();
+    };
+  }, []);
+
+  const fetchData = () => {
+    if (socket) {
+      socket.send(JSON.stringify({ event: 'get_data' }));
+    }
+  };
+
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>{data ? data : 'Tap to Fetch Data'}</Text>
+      <Button title="Fetch Data" onPress={fetchData} />
+    </View>
+  );
+};
+
+export default ClientComponent;
+
+
 /* // App.js
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
@@ -39,6 +88,7 @@ export default function App() {
 
   const sendMessage = () => {
     socket.emit('message', message);
+    console.log(message)
     setMessage('');
   };
 
@@ -88,7 +138,7 @@ const styles = StyleSheet.create({
 });
  */
 // ClientComponent.js
-import React, { useState, useEffect } from 'react';
+/* import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 
 const ClientComponent = () => {
@@ -115,4 +165,4 @@ const ClientComponent = () => {
   );
 };
 
-export default ClientComponent;
+export default ClientComponent; */
