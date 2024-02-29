@@ -1,4 +1,92 @@
+/* // App.js
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import io from 'socket.io-client';
 
+export default function App() {
+  const [message, setMessage] = useState('');
+  const [response, setResponse] = useState('');
+  const socket = io('http://127.0.0.1:5000'); // Replace with your backend IP
+  useEffect(() => {
+    console.log('Attempting to connect to server...');
+    socket.on('connect', () => {
+      console.log('Connected to server');
+    });
+  
+    socket.on('response', (data) => {
+      console.log('Received response:', data);
+      setResponse(data);
+    });
+  
+    socket.on('disconnect', () => {
+      console.log('Disconnected from server');
+    });
+  
+    return () => {
+      socket.disconnect();
+      console.log('Disconnected from server');
+    };
+  }, []);
+  useEffect(() => {
+    socket.on('response', (data) => {
+      setResponse(data);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
+  const sendMessage = () => {
+    socket.emit('message', message);
+    setMessage('');
+  };
+
+  return (
+    <View style={styles.container}>
+      <TextInput
+        style={styles.input}
+        value={message}
+        onChangeText={setMessage}
+        placeholder="Enter message"
+      />
+      <TouchableOpacity style={styles.button} onPress={sendMessage}>
+        <Text style={styles.buttonText}>Send Message</Text>
+      </TouchableOpacity>
+      <Text style={styles.response}>{response}</Text>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
+  input: {
+    width: '80%',
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 20,
+    paddingHorizontal: 10,
+  },
+  button: {
+    backgroundColor: 'blue',
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  response: {
+    marginTop: 20,
+  },
+});
+ */
 // ClientComponent.js
 import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
@@ -12,7 +100,7 @@ const ClientComponent = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:5000/data');
+      const response = await fetch('http://192.168.1.63:5000/data');
       const jsonData = await response.json();
       setData(jsonData.message);
     } catch (error) {
@@ -28,64 +116,3 @@ const ClientComponent = () => {
 };
 
 export default ClientComponent;
-
-/* import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, ScrollView } from 'react-native';
-import io from 'socket.io-client';
-
-const SERVER_URL = 'http://192.168.1.63:5000'; // Replace with your server IP address
-
-const SocketIOClient = () => {
-  const [socket, setSocket] = useState(null);
-  const [messages, setMessages] = useState([]);
-  const [inputMessage, setInputMessage] = useState('');
-
-  useEffect(() => {
-    const newSocket = io(SERVER_URL);
-    setSocket(newSocket);
-
-    return () => {
-      newSocket.disconnect();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!socket) return;
-
-    socket.on('response', (data) => {
-      setMessages((prevMessages) => [...prevMessages, data]);
-    });
-
-    return () => {
-      socket.off('response');
-    };
-  }, [socket]);
-
-  const sendMessage = () => {
-    if (!socket || !inputMessage.trim()) return;
-
-    socket.emit('message', inputMessage.trim());
-    console.log(inputMessage);
-    setInputMessage('');
-  };
-
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
-      <ScrollView style={{ marginBottom: 20 }}>
-        {messages.map((message, index) => (
-          <Text key={index}>{message}</Text>
-        ))}
-      </ScrollView>
-      <TextInput
-        style={{ width: '80%', borderWidth: 1, padding: 10, marginBottom: 10 }}
-        value={inputMessage}
-        onChangeText={(text) => setInputMessage(text)}
-        placeholder="Type your message here..."
-      />
-      <Button title="Send" onPress={sendMessage} />
-    </View>
-  );
-};
-
-export default SocketIOClient;
- */
