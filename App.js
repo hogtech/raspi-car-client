@@ -1,4 +1,4 @@
-
+/* 
 // App.js
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
@@ -93,9 +93,9 @@ const styles = StyleSheet.create({
   response: {
     marginTop: 20,
   },
-});
+}); */
 
-/* // App.js
+// App.js
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import io from 'socket.io-client';
@@ -112,7 +112,7 @@ export default function App() {
   
     socket.on('response', (data) => {
       console.log('Received response:', data);
-      //setResponse(data);
+      setResponse(data);
     });
   
     socket.on('disconnect', () => {
@@ -183,9 +183,9 @@ const styles = StyleSheet.create({
   response: {
     marginTop: 20,
   },
-}); */
+});
 
-// ClientComponent.js
+/* ClientComponent.js
 /* import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 
